@@ -1,0 +1,257 @@
+/* === Global Reset === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* === Body Styling === */
+body {
+    background-image: url('background.png'); /* Base background */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-color: #f0f0f0; /* Fallback color */
+    min-height: 100vh;
+    font-family: 'Lato', sans-serif;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overscroll-behavior: none;
+}
+
+/* === Main Game Container === */
+#game-container {
+    max-width: 1200px;
+    width: 95%;
+    padding: 25px;
+    background-color: rgba(255, 255, 255, 0.88);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    max-height: calc(100vh - 40px);
+    overflow: hidden;
+}
+
+/* === Grid Wrapper (Title + Grid) === */
+#grid-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+/* === Game Title === */
+#game-title {
+    text-align: center;
+    font-size: clamp(1.8em, 5vw, 2.5em);
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+/* === Garden Growth Visualization === */
+/* Base Style = Stage 0 (0-1 words found) */
+#garden-visualization {
+    min-height: 100px;
+    height: 150px;
+    max-height: 200px;
+    width: 100%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 10px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    /* Optional: Define a specific Stage 0 look */
+    background-image: url('stages/stage0.png'); /* Or url('stage0.png') or none */
+    background-color: rgba(240, 240, 240, 0.5);
+    opacity: 0.8; /* Start slightly less opaque */
+    transform: scale(1);
+    transition: opacity 0.6s ease, /* Slightly longer transition */
+                transform 0.6s ease,
+                background-image 0.4s ease-out,
+                background-color 0.6s ease-in-out;
+}
+
+/* --- Growth Stage 1 (2-3 words found) --- */
+#garden-visualization.growth-stage-1 {
+    background-image: url('stages/stage1.png'); /* !! PROVIDE THIS IMAGE !! */
+    background-color: rgba(190, 225, 190, 0.6); /* Slightly greener */
+    opacity: 0.85;
+    transform: scale(1.01);
+}
+
+/* --- Growth Stage 2 (4-5 words found) --- */
+#garden-visualization.growth-stage-2 {
+    background-image: url('stages/stage2.png'); /* !! PROVIDE THIS IMAGE !! */
+    background-color: rgba(160, 210, 160, 0.7);
+    opacity: 0.9;
+    transform: scale(1.02);
+}
+
+/* --- Growth Stage 3 (6-7 words found) --- */
+#garden-visualization.growth-stage-3 {
+    background-image: url('stages/stage3.png'); /* !! PROVIDE THIS IMAGE !! */
+    background-color: rgba(130, 195, 130, 0.8);
+    opacity: 0.95;
+    transform: scale(1.03);
+}
+
+/* --- Growth Stage 4 (8 words found - All words) --- */
+#garden-visualization.growth-stage-4 {
+    background-image: url('stages/stage4.png'); /* !! PROVIDE THIS IMAGE !! */
+    background-color: rgba(100, 180, 100, 0.9); /* Most vibrant */
+    opacity: 1;
+    transform: scale(1.04); /* Max scale */
+}
+
+
+/* === Word Search Grid === */
+#grid-container {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-size, 10), minmax(0, 1fr));
+    grid-template-rows: repeat(var(--grid-size, 10), minmax(0, 1fr));
+    gap: 2px;
+    width: 100%;
+    max-width: 500px;
+    padding: 10px;
+    background-color: rgba(240, 240, 240, 0.5);
+    border-radius: 10px;
+    aspect-ratio: 1 / 1;
+    max-height: 500px;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+}
+
+/* --- Grid Cell Styles --- */
+.grid-cell {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(0.8em, 2.5vw, 1.2em);
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+    background-color: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(200, 200, 200, 0.4);
+    color: #444;
+    cursor: pointer;
+    transition: background-color 0.2s ease,
+                box-shadow 0.2s ease,
+                color 0.2s ease,
+                border-color 0.2s ease,
+                transform 0.1s ease;
+}
+
+.grid-cell:not(.selecting):not(.found):hover {
+    background-color: rgba(235, 235, 235, 0.9);
+    border-color: rgba(180, 180, 180, 0.7);
+}
+
+.grid-cell.selecting {
+    background-color: rgba(173, 216, 230, 0.8);
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    border-color: rgba(100, 150, 180, 0.7);
+    color: #1a2e3b;
+    transform: scale(0.95);
+}
+
+.grid-cell.found {
+    background-color: rgba(144, 238, 144, 0.75);
+    color: #333;
+    border-color: rgba(80, 180, 80, 0.6);
+    transform: scale(1);
+    cursor: default;
+}
+
+/* === Controls Area (Word List) === */
+#controls-container {
+    padding: 15px;
+    background-color: rgba(245, 245, 245, 0.6);
+    border-radius: 10px;
+    overflow-y: auto;
+}
+
+#word-list-container h2 {
+    font-size: clamp(1.3em, 4vw, 1.6em);
+    margin-bottom: 10px;
+    color: #2c3e50;
+    text-align: center;
+}
+
+#word-list { list-style: none; padding: 0; margin: 0; }
+#word-list li {
+    margin: 8px 0;
+    padding: 6px 10px;
+    font-size: clamp(0.9em, 3vw, 1.1em);
+    color: #34495e;
+    transition: color 0.3s ease, opacity 0.3s ease, text-decoration-color 0.3s ease;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+#word-list li.found-word {
+    text-decoration: line-through;
+    text-decoration-color: rgba(100, 180, 100, 0.9);
+    text-decoration-thickness: 2px;
+    color: #8a9a9d;
+    opacity: 0.65;
+}
+
+/* === Mindfulness Popup === */
+#mindfulness-popup {
+    position: fixed;
+    bottom: -200px;
+    right: 20px;
+    background-color: rgba(60, 60, 60, 0.95);
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.5s ease, bottom 0.5s ease-in-out;
+    z-index: 1000;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    max-width: 350px;
+    pointer-events: none;
+}
+#mindfulness-popup.show { opacity: 1; bottom: 20px; pointer-events: auto; }
+#mindfulness-popup.win-message { background-color: rgba(52, 152, 219, 0.95); }
+.win-message h3 { font-size: clamp(1.5em, 4vw, 1.8em); margin-bottom: 10px; color: #ecf0f1; }
+.win-message p { font-size: clamp(1em, 3vw, 1.2em); margin-bottom: 15px; color: #bdc3c7; }
+button#new-puzzle-btn { display: inline-block; padding: 10px 20px; background-color: #3498db; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: clamp(.9em, 2.5vw, 1.1em); font-weight: 600; margin-top: 15px; transition: background-color .3s ease,transform .1s ease; }
+button#new-puzzle-btn:hover { background-color: #2980b9; transform: translateY(-2px); }
+button#new-puzzle-btn:active { transform: translateY(0px); }
+
+/* === Responsive Adjustments (Desktop Layout) === */
+@media (min-width: 900px) {
+    #game-container {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 20px;
+        overflow-x: auto;
+        max-height: calc(100vh - 40px);
+        overflow-y: hidden;
+    }
+    #garden-visualization {
+        flex: 1 1 250px;
+        max-width: 300px;
+        height: auto;
+        min-height: 300px;
+        max-height: 600px; /* Adjust max height for stages */
+        align-self: stretch;
+        margin: 0;
+        height: auto;
+        max-height: none; /* Let align-self control height */
+    }
+    #grid-wrapper { flex: 2 1 500px; gap: 20px; align-self: stretch; justify-content: center; }
+    #grid-container { margin: 0; max-height: calc(100% - 60px); }
+    #controls-container { flex: 1 1 220px; min-width: 200px; max-width: 280px; align-self: stretch; overflow-y: auto; padding: 15px; }
+}

@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: 
+
+Sitemap: https://harsh793xd.github.io/Shizumi-Garden/sitemap.xml
